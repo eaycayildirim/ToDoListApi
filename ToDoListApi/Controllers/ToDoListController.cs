@@ -58,5 +58,26 @@ namespace ToDoListApi.Controllers
             _todoRepository.Tasks.Add(task);
             return CreatedAtRoute("GetTaskById", new {id = task.Id}, task);
         }
+
+        [HttpPut("Update")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult UpdateTask(int id, [FromBody] ToDoListTask task)
+        {
+            if(task == null) 
+                return BadRequest("Invalid Task");
+            if (id != task.Id)
+                return BadRequest("Id does not match the Id from requested body.");
+            var existedTask = _todoRepository.Tasks.FirstOrDefault(x => x.Id == task.Id);
+            if(existedTask == null)
+                return NotFound($"Task with id: {id} not found");
+
+            existedTask.Title = task.Title;
+            existedTask.Description = task.Description;
+            existedTask.DueDate = task.DueDate;
+            existedTask.Status = task.Status;
+            return NoContent();
+        }
     }
 }
