@@ -79,5 +79,18 @@ namespace ToDoListApi.Controllers
             existedTask.Status = task.Status;
             return NoContent();
         }
+
+        [HttpDelete("Delete/{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteTask(int id)
+        {
+            var task = _todoRepository.Tasks.FirstOrDefault(x => x.Id == id);
+            if(task == null)
+                return NotFound($"Task with id: {id} not found");
+            _todoRepository.Tasks.Remove(task);
+            return Ok();
+        }
     }
 }
