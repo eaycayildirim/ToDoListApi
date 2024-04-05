@@ -1,4 +1,6 @@
 
+using ToDoListApi.Repositories;
+
 namespace ToDoListApi
 {
     public class Program
@@ -13,6 +15,8 @@ namespace ToDoListApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSingleton<IToDoListRepository, ToDoListRepository>();
 
             var app = builder.Build();
 
