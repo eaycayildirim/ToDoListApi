@@ -27,12 +27,36 @@ namespace ToDoListApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<ToDoListTask>> GetTaskById(int id)
+        public ActionResult<ToDoListTask> GetTaskById(int id)
         {
             var task = _todoRepository.Tasks.FirstOrDefault(x => x.Id == id);
             if (task == null)
                 return NotFound($"Task with id: {id} not found");
             return Ok(task);
+        }
+
+        [HttpPost("Create")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<ToDoListTask> CreateTask([FromBody]ToDoListTask task)
+        {
+            if (task == null)
+                return BadRequest(task);
+            if(_todoRepository.Tasks.Any(x => x.Title.ToLower() == task.Title.ToLower()))
+            {
+                ModelState.AddModelError("TitleError", "Title already exists.");
+                return BadRequest(ModelState);
+            }
+            if(_todoRepository.Tasks.Any(x => x.Id == task.Id))
+            {
+                ModelState.AddModelError("IdError", "Id already exists.");
+                return BadRequest(ModelState);
+            }
+            int newId = _todoRepository.Tasks.Count() > 0 ? _todoRepository.Tasks.Max(x => x.Id) + 1 : 1;
+            task.Id = newId;
+            _todoRepository.Tasks.Add(task);
+            return CreatedAtRoute("GetTaskById", new {id = task.Id}, task);
         }
     }
 }
