@@ -22,5 +22,17 @@ namespace ToDoListApi.Controllers
         {
             return Ok(_todoRepository.Tasks);
         }
+
+        [HttpGet("{id:int}", Name = "GetTaskById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<ToDoListTask>> GetTaskById(int id)
+        {
+            var task = _todoRepository.Tasks.FirstOrDefault(x => x.Id == id);
+            if (task == null)
+                return NotFound($"Task with id: {id} not found");
+            return Ok(task);
+        }
     }
 }
