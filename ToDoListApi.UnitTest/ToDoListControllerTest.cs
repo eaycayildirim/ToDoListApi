@@ -84,7 +84,6 @@ namespace ToDoListApi.UnitTest
             Assert.AreEqual(task, resultTask);
         }
 
-
         [TestMethod]
         public void CreateTask_Returns_CreatedAtRoute()
         {
@@ -100,8 +99,6 @@ namespace ToDoListApi.UnitTest
             //Assert
             Assert.IsInstanceOfType<CreatedAtRouteResult>(result.Result);
         }
-
-
 
         [TestMethod]
         public void CreateTask_Returns_New_Created_Task()
@@ -120,6 +117,23 @@ namespace ToDoListApi.UnitTest
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(resultType.Value, typeof(ToDoListTask));
             Assert.AreEqual(task, resultTask);
+        }
+
+        [TestMethod]
+        public void UpdateTask_Returns_NoContent()
+        {
+            //Arrange
+            int days = 1;
+            int id = 1;
+            var task = new ToDoListTask() { Id = id, Title = "First Task", DueDate = DateTime.Now.AddDays(days), Status = Model.TaskStatus.NotStarted };
+            _controller.CreateTask(task);
+            var updatedTask = new ToDoListTask() { Id = id, Title = "First Task", DueDate = DateTime.Now.AddDays(days), Status = Model.TaskStatus.Finished };
+
+            //Act
+            var result = _controller.UpdateTask(1, task);
+
+            //Assert
+            Assert.IsInstanceOfType<NoContentResult>(result);
         }
     }
 }
