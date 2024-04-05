@@ -2,8 +2,12 @@
 
 namespace ToDoListApi.Validation
 {
+    /// <summary>
+    /// UniqueId validation attribute to ensure the ID is valid
+    /// </summary>
     public class UniqueIdAttribute : ValidationAttribute
     {
+        /// <inheritdoc/>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var id = (int?)value;

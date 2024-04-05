@@ -2,8 +2,12 @@
 
 namespace ToDoListApi.Validation
 {
+    /// <summary>
+    /// DateCheck validation attribute to ensure due date is in the future
+    /// </summary>
     public class DateCheckAttribute : ValidationAttribute
     {
+        /// <inheritdoc/>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var date = (DateTime?)value;
