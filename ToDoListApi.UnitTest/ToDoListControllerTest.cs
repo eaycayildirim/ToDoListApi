@@ -40,12 +40,48 @@ namespace ToDoListApi.UnitTest
             //Act
             var result = _controller.GetTasks();
             var resultType = result.Result as OkObjectResult;
-            var resultList = resultType.Value as List<ToDoListTask>;
+            var resultList = resultType.Value as IEnumerable<ToDoListTask>;
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(resultType.Value, typeof(IEnumerable<ToDoListTask>));
+            Assert.AreEqual(expectedListItems, resultList.Count());
+        }
+
+        [TestMethod]
+        public void GetTaskById_Returns_Ok()
+        {
+            //Arrange
+            int days = 1;
+            int id = 1;
+            _todoRepository.Tasks.Add(new ToDoListTask() { Id = id, Title = "First Task", DueDate = DateTime.Now.AddDays(days), Status = Model.TaskStatus.NotStarted });
+
+            //Act
+            var result = _controller.GetTaskById(id);
+
+            //Assert
+            Assert.IsInstanceOfType<OkObjectResult>(result.Result);
+
+        }
+
+        [TestMethod]
+        public void GetTaskById_Returns_Task_With_The_Right_Id()
+        {
+            //Arrange
+            int days = 1;
+            int id = 1;
+            var task = new ToDoListTask() { Id = id, Title = "First Task", DueDate = DateTime.Now.AddDays(days), Status = Model.TaskStatus.NotStarted };
+            _todoRepository.Tasks.Add(task);
+
+            //Act
+            var result = _controller.GetTaskById(id);
+            var resultType = result.Result as OkObjectResult;
+            var resultTask = resultType.Value as ToDoListTask;
 
             //Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(resultType.Value, typeof(ToDoListTask));
-            Assert.AreEqual(expectedListItems, resultList.Count());
+            Assert.AreEqual(task, resultTask);
         }
     }
 }
